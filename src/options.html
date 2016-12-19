@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Opciones</title>
+    <style>
+        body: {
+            padding: 10px;
+        }
+        input[type=text],
+        input[type=password] {
+            width: 100%;
+            padding: 12px 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 16px 32px;
+            cursor: pointer;
+            float: right;
+        }
+        #status {
+            float: left;
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    Servidor: <input type="text" id="server_url"><br/>
+    Base de datos: <input type="text" id="dbname"><br/>
+    Usuario: <input type="text" id="user"><br/>
+    Contraseña: <input type="password" id="password"><br/>
+
+    <div id="status"></div>
+    <button id="save">Guardar</button>
+    <script src="options.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+{
+    "name": "Asistencias Odoo",
+    "version": "1.0",
+    "manifest_version": 2,
+    "description": "Verifica el último registro de asistencia en Odoo",
+    "browser_action": {
+        "default_icon": "logo128.png"
+    },
+    "icons": {
+      "16": "logo16.png",
+      "48": "logo48.png",
+      "128": "logo128.png"
+    },
+    "background": {
+        "scripts": [
+            "jquery-3.1.1.min.js",
+            "jquery.xmlrpc.min.js",
+            "background.js"
+        ]
+    },
+    "options_ui": {
+        "page": "options.html",
+        "chrome_style": true,
+        "open_in_tab": false
+    },
+    "permissions": [
+        "http://*/",
+        "storage"
+    ]
+}
