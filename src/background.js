@@ -159,7 +159,7 @@ function setStatus(status, worked_time = null) {
           ]
         ], {
           'fields': ['action', 'name'],
-          'limit': 10
+          'limit': 100
         }
       ]
     }
