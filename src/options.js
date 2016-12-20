@@ -23,9 +23,12 @@ function save_options() {
 // Restores select box and checkbox state using the preferences
 // stored in chrome.storage.
 function restore_options() {
-    chrome.storage.sync.get(
-	['server_url', 'dbname', 'user', 'password'],
-	function(items) {
+    chrome.storage.sync.get({
+            server_url: '',
+            dbname: '',
+            user: '',
+            password: ''
+        },function(items) {
 		document.getElementById('server_url').value = items.server_url;
 		document.getElementById('dbname').value = items.dbname;
 		document.getElementById('user').value = items.user;
