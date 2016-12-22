@@ -18,24 +18,6 @@ function odoo_dt(dt) {
   return Y + "-" + m + "-" + d + " " + H + ":" + M + ":" + S;
 }
 
-function get_worked_time(records) {
-  records = records.reverse();
-  records.push({
-    action: "sign_out",
-    name: odoo_now()
-  });
-  var total = 0;
-  for (var i = 1; i < records.length; i++) {
-    if (records[i]['action'] === "sign_out" && records[i - 1]['action'] === "sign_in") {
-      var current = new Date(records[i]['name']) - new Date(records[i - 1]['name']);
-      total += current;
-    }
-  }
-  var dt = new Date(total);
-  var dt_str = dt.getUTCHours() + ":" + ("0" + dt.getUTCMinutes()).slice(-2);
-  return dt_str;
-}
-
 function setStatus(status, worked_time = null) {
   if (status == "sign_in") {
     chrome.browserAction.setBadgeText({
@@ -65,6 +47,24 @@ function setStatus(status, worked_time = null) {
   }
 }
 
+function get_worked_time(records) {
+  records = records.reverse();
+  records.push({
+    action: "sign_out",
+    name: odoo_now()
+  });
+  var total = 0;
+  for (var i = 1; i < records.length; i++) {
+    if (records[i]['action'] === "sign_out" && records[i - 1]['action'] === "sign_in") {
+      var current = new Date(records[i]['name']) - new Date(records[i - 1]['name']);
+      total += current;
+    }
+  }
+  var dt = new Date(total);
+  var dt_str = dt.getUTCHours() + ":" + ("0" + dt.getUTCMinutes()).slice(-2);
+  return dt_str;
+}
+
 (function start_daemon() {
   var daemon = this;
 
@@ -82,7 +82,7 @@ function setStatus(status, worked_time = null) {
       return false;
     }
     return true;
-  }
+  };
 
   daemon.start = function() {
     chrome.storage.sync.get(
@@ -104,7 +104,7 @@ function setStatus(status, worked_time = null) {
           setStatus('not_configured');
         }
       });
-  }
+  };
 
   daemon.restart = function() {
     if (daemon.intervalID !== undefined) {
@@ -112,7 +112,7 @@ function setStatus(status, worked_time = null) {
       daemon.intervalID = undefined;
     }
     daemon.start();
-  }
+  };
 
   daemon.run = function() {
     // step: 0 -> set uid | 1 -> set employee_id | 2 -> check attendance
@@ -182,26 +182,33 @@ function setStatus(status, worked_time = null) {
           });
           // console.log(daemon.employee_id);
         } else { // step = 2
-          var worked_time = "0:00";
+          daemon.worked_time = "0:00";
           var action = 'sign_out';
           try {
             action = jqXHR.responseJSON[0][0]["action"];
-            worked_time = get_worked_time(jqXHR.responseJSON[0]);
+            daemon.worked_time = get_worked_time(jqXHR.responseJSON[0]);
           } finally {
             // console.log(action);
-            setStatus(action, worked_time);
+            setStatus(action, daemon.worked_time);
           }
         }
       },
       error: function(jqXHR, status, error) {
-        console.log(error);
+        // console.log(error);
         setStatus("undefined");
       }
     });
-  }
+  };
 
   daemon.start();
   chrome.storage.onChanged.addListener(function(changes, namespace) {
     daemon.restart();
+  });
+
+  chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
+    if(message.method == "getWorkedTime"){
+      sendResponse(daemon.worked_time);
+      return true;
+    }
   });
 })();
