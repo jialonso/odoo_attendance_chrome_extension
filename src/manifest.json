@@ -14,15 +14,19 @@
     },
     "background": {
         "scripts": [
-            "jquery-3.1.1.min.js",
-            "jquery.xmlrpc.min.js",
+            "lib/browser-polyfill.js",
+            "lib/jquery-3.1.1.min.js",
+            "lib/jquery.xmlrpc.min.js",
             "background.js"
         ]
     },
     "options_ui": {
-        "page": "options.html",
-        "chrome_style": true,
-        "open_in_tab": false
+        "page": "options.html"
+    },
+    "applications": {
+      "gecko": {
+        "id": "odoo_attendance@jialonso.com"
+      }
     },
     "permissions": [
         "http://*/",

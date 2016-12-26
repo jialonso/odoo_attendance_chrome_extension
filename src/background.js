@@ -20,28 +20,28 @@ function odoo_dt(dt) {
 
 function setStatus(status, worked_time = null) {
   if (status == "sign_in") {
-    chrome.browserAction.setBadgeText({
+    browser.browserAction.setBadgeText({
       text: worked_time
     });
-    chrome.browserAction.setBadgeBackgroundColor({
+    browser.browserAction.setBadgeBackgroundColor({
       color: [0, 255, 0, 255]
     });
   } else if (status == "sign_out") {
-    chrome.browserAction.setBadgeText({
+    browser.browserAction.setBadgeText({
       text: worked_time
     });
-    chrome.browserAction.setBadgeBackgroundColor({
+    browser.browserAction.setBadgeBackgroundColor({
       color: [255, 0, 0, 255]
     });
   } else if (status == "undefined") {
-    chrome.browserAction.setBadgeText({
+    browser.browserAction.setBadgeText({
       text: "  "
     });
-    chrome.browserAction.setBadgeBackgroundColor({
+    browser.browserAction.setBadgeBackgroundColor({
       color: [213, 219, 219, 255]
     });
   } else if (status == "not_configured") {
-    chrome.browserAction.setBadgeText({
+    browser.browserAction.setBadgeText({
       text: ""
     });
   }
@@ -85,9 +85,7 @@ function get_worked_time(records) {
   };
 
   daemon.start = function() {
-    chrome.storage.sync.get(
-      ['server_url', 'dbname', 'user', 'password', 'uid', 'employee_id'],
-      function(items) {
+    browser.storage.local.get(['server_url', 'dbname', 'user', 'password', 'uid', 'employee_id']).then(items => {
         daemon.server_url = items.server_url;
         daemon.dbname = items.dbname;
         daemon.user = items.user;
@@ -171,26 +169,27 @@ function get_worked_time(records) {
       success: function(response, status, jqXHR) {
         if (step == 0) {
           var uid = jqXHR.responseJSON[0];
-          chrome.storage.sync.set({
+          browser.storage.local.set({
               uid: uid,
           });
           // console.log(daemon.uid);
         } else if (step == 1) {
           var employee_id = jqXHR.responseJSON[0][0]["id"];
-          chrome.storage.sync.set({
+          browser.storage.local.set({
               employee_id: employee_id,
           });
           // console.log(daemon.employee_id);
         } else { // step = 2
-          daemon.worked_time = "0:00";
-          var action = 'sign_out';
-          try {
+          var action;
+          if(jqXHR.responseJSON[0].length > 0) {
             action = jqXHR.responseJSON[0][0]["action"];
             daemon.worked_time = get_worked_time(jqXHR.responseJSON[0]);
-          } finally {
-            // console.log(action);
-            setStatus(action, daemon.worked_time);
           }
+          else {
+            action = 'sign_out';
+            daemon.worked_time = "0:00";
+          }
+          setStatus(action, daemon.worked_time);
         }
       },
       error: function(jqXHR, status, error) {
@@ -201,14 +200,14 @@ function get_worked_time(records) {
   };
 
   daemon.start();
-  chrome.storage.onChanged.addListener(function(changes, namespace) {
+  browser.storage.onChanged.addListener((changes, namespace) => {
     daemon.restart();
   });
 
-  chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
-    if(message.method == "getWorkedTime"){
-      sendResponse(daemon.worked_time);
-      return true;
+  browser.runtime.onMessage.addListener(msg => {
+    if (msg === "getWorkedTime") {
+      return daemon.worked_time;
     }
   });
+
 })();

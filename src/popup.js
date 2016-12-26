@@ -1,6 +1,8 @@
 function sync_message() {
-  chrome.runtime.sendMessage({method:"getWorkedTime"},function(response){
-    document.getElementById('worked_time').innerHTML = response;
+  browser.runtime.sendMessage("getWorkedTime").then(response => {
+    if(typeof response === 'string' && response.length > 0) {
+      document.getElementById('worked_time').innerHTML = response;
+    }
   });
 }
 
