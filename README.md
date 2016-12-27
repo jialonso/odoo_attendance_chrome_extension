@@ -1,1 +1,1 @@
-# odoo_attendance_chrome_extension
+# odoo_attendance_webextension
