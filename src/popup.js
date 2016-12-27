@@ -3,6 +3,9 @@ function sync_message() {
     if(typeof response === 'string' && response.length > 0) {
       document.getElementById('worked_time').innerHTML = response;
     }
+    else {
+      document.getElementById('worked_time').innerHTML = "Not configured";
+    }
   });
 }
 
