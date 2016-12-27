@@ -206,7 +206,9 @@ function get_worked_time(records) {
 
   browser.runtime.onMessage.addListener(msg => {
     if (msg === "getWorkedTime") {
-      return daemon.worked_time;
+      return new Promise((resolve, reject) => {
+        resolve(daemon.worked_time);
+      });
     }
   });
 
