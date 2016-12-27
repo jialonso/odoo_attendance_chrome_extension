@@ -23,11 +23,6 @@
     "options_ui": {
         "page": "options.html"
     },
-    "applications": {
-      "gecko": {
-        "id": "odoo_attendance@jialonso.com"
-      }
-    },
     "permissions": [
         "http://*/",
         "https://*/",
