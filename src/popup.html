@@ -1,13 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html style="min-width: 100px">
 
 <head>
   <meta charset="UTF-8">
   <title>Worked time</title>
+  <style>
+      button {
+        border: none;
+        color: white;
+        padding: 4px 8px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+      #popup_container {
+        text-align: center;
+      }
+      #sign_in_btn {
+          background-color: #4CAF50;
+          display = 'none';
+      }
+      #sign_out_btn {
+          background-color: #f44336;
+          display = 'none';
+      }
+  </style>
 </head>
 
 <body>
-  <h1 id="worked_time"></h1>
+  <div id="popup_container">
+    <h1 id="worked_time"></h1>
+    <button id="sign_in_btn">Sign in</button>
+    <button id="sign_out_btn">Sign out</button>
+  </div>
   <script type="application/javascript" src="lib/browser-polyfill.js"></script>
   <script type="application/javascript" src="popup.js"></script>
 </body>

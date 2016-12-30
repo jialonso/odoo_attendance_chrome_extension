@@ -21,14 +21,14 @@ function odoo_dt(dt) {
 function setStatus(status, worked_time = null) {
   if (status == "sign_in") {
     browser.browserAction.setBadgeText({
-      text: worked_time
+      text: worked_time.slice(-4)
     });
     browser.browserAction.setBadgeBackgroundColor({
       color: [0, 255, 0, 255]
     });
   } else if (status == "sign_out") {
     browser.browserAction.setBadgeText({
-      text: worked_time
+      text: worked_time.slice(-4)
     });
     browser.browserAction.setBadgeBackgroundColor({
       color: [255, 0, 0, 255]
@@ -61,7 +61,7 @@ function get_worked_time(records) {
     }
   }
   var dt = new Date(total);
-  var dt_str = dt.getUTCHours() + ":" + ("0" + dt.getUTCMinutes()).slice(-2);
+  var dt_str = ("0" + dt.getUTCHours()).slice(-2) + ":" + ("0" + dt.getUTCMinutes()).slice(-2);
   return dt_str;
 }
 
@@ -92,13 +92,16 @@ function get_worked_time(records) {
         daemon.password = items.password;
         daemon.uid = items.uid;
         daemon.employee_id = items.employee_id;
+        daemon.worked_time = "";
         if (daemon.is_configured()) {
+          daemon.status = "undefined";
           setStatus('undefined');
 
           // start timer
           daemon.run();
           daemon.intervalID = window.setInterval(daemon.run, 30000);
         } else {
+          daemon.status = "not_configured";
           setStatus('not_configured');
         }
       });
@@ -182,14 +185,14 @@ function get_worked_time(records) {
         } else { // step = 2
           var action;
           if(jqXHR.responseJSON[0].length > 0) {
-            action = jqXHR.responseJSON[0][0]["action"];
+            daemon.status = jqXHR.responseJSON[0][0]["action"];
             daemon.worked_time = get_worked_time(jqXHR.responseJSON[0]);
           }
           else {
-            action = 'sign_out';
+            daemon.status = 'sign_out';
             daemon.worked_time = "0:00";
           }
-          setStatus(action, daemon.worked_time);
+          setStatus(daemon.status, daemon.worked_time);
         }
       },
       error: function(jqXHR, status, error) {
@@ -205,10 +208,38 @@ function get_worked_time(records) {
   });
 
   browser.runtime.onMessage.addListener(msg => {
-    if (msg === "getWorkedTime") {
+    if (msg === "getStatus") {
       return new Promise((resolve, reject) => {
-        resolve(daemon.worked_time);
+        resolve({
+          'status': daemon.status,
+          'worked_time': daemon.worked_time
+        });
       });
+    }
+    else if (msg === "sign_in" || msg === "sign_out") {
+      $.xmlrpc({
+        url: daemon.server_url + '/xmlrpc/object',
+        methodName: 'execute_kw',
+        dataType: 'jsonrpc',
+        params: [
+          $.xmlrpc.force('string', daemon.dbname),
+          $.xmlrpc.force('int', daemon.uid),
+          $.xmlrpc.force('string', daemon.password),
+          $.xmlrpc.force('string', 'hr.attendance'),
+          $.xmlrpc.force('string', 'create'),
+          [{
+            'employee_id': daemon.employee_id,
+            'action': msg
+          }]
+        ],
+        success: function(response, status, jqXHR) {
+          daemon.restart();
+        },
+        error: function(jqXHR, status, error) {
+          daemon.restart();
+        }
+      });
+      return true;
     }
   });
 
