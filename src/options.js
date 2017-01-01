@@ -4,11 +4,13 @@ function save_options() {
     var dbname = document.getElementById('dbname').value;
     var user = document.getElementById('user').value;
     var password = document.getElementById('password').value;
+    var check_buttons = document.getElementById('check_buttons').checked;
     browser.storage.local.set({
         server_url: server_url,
         dbname: dbname,
         user: user,
         password: password,
+        check_buttons: check_buttons
     }).then(() => {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
@@ -27,12 +29,14 @@ function restore_options() {
         server_url: '',
         dbname: '',
         user: '',
-        password: ''
+        password: '',
+        check_buttons: true
     }).then(items => {
     	document.getElementById('server_url').value = items.server_url;
     	document.getElementById('dbname').value = items.dbname;
     	document.getElementById('user').value = items.user;
     	document.getElementById('password').value = items.password;
+      document.getElementById('check_buttons').checked = items.check_buttons;
     });
 }
 document.addEventListener('DOMContentLoaded', restore_options);

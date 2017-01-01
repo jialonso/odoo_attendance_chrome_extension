@@ -3,7 +3,7 @@
 
 <head>
    <meta charset="UTF-8">
-    <title>Opciones</title>
+    <title>Options</title>
     <style>
         input[type=text],
         input[type=password] {
@@ -11,6 +11,10 @@
             padding: 12px 12px;
             margin: 8px 0;
             box-sizing: border-box;
+        }
+        input[type=checkbox] {
+          padding: 12px 12px;
+          margin: 8px 0;
         }
         button {
             border: none;
@@ -33,10 +37,11 @@
 </head>
 
 <body>
-    Servidor: <input type="text" id="server_url"><br/>
-    Base de datos: <input type="text" id="dbname"><br/>
-    Usuario: <input type="text" id="user"><br/>
-    Contrase&ntilde;a: <input type="password" id="password"><br/>
+    Server: <input type="text" id="server_url" placeholder="http://...:8069"><br/>
+    Database: <input type="text" id="dbname"  placeholder="yourcompanydb"><br/>
+    User: <input type="text" id="user" placeholder="user@yourcompany.com"><br/>
+    Password: <input type="password" id="password"><br/>
+    <input type="checkbox" id="check_buttons"> Allow sign in/out<br>
 
     <div id="status"></div>
     <button id="save">Guardar</button>
