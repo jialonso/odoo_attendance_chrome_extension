@@ -57,7 +57,7 @@ function get_worked_time(records) {
   for (var i = 1; i < records.length; i++) {
     if (records[i]['action'] === "sign_out" && records[i - 1]['action'] === "sign_in") {
       var current = new Date(records[i]['name']) - new Date(records[i - 1]['name']);
-      total += current;
+      total += Math.max(0, current);  // Avoid problems with non-sincronized clocks
     }
   }
   var dt = new Date(total);
