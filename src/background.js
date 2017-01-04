@@ -2,7 +2,7 @@ function setStatus(status, worked_time = null) {
   var badgeText;
   var badgeColor;
   if (status === "sign_in" || status === 'sign_out') {
-    if (parseInt(worked_time.split(":")[0]) === 0) {
+    if (parseInt(worked_time.split(":")[0]) < 10) {
       badgeText = worked_time.slice(-4);
     } else {
       badgeText = worked_time.split(":")[0] + "h";
