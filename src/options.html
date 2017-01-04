@@ -6,7 +6,8 @@
     <title>Options</title>
     <style>
         input[type=text],
-        input[type=password] {
+        input[type=password],
+        input[type=number] {
             width: 100%;
             padding: 12px 12px;
             margin: 8px 0;
@@ -37,10 +38,11 @@
 </head>
 
 <body>
-    Server: <input type="text" id="server_url" placeholder="http://...:8069"><br/>
+    Server: <input type="text" id="server_url" required pattern="https?://.+" placeholder="http://...:8069"><br/>
     Database: <input type="text" id="dbname"  placeholder="yourcompanydb"><br/>
     User: <input type="text" id="user" placeholder="user@yourcompany.com"><br/>
     Password: <input type="password" id="password"><br/>
+    Update interval (seconds): <input type="number" id="interval" min="30" value="30"><br/>
     <input type="checkbox" id="check_buttons"> Allow sign in/out<br>
 
     <div id="status"></div>

@@ -44,7 +44,7 @@ function setStatus(status, worked_time = null) {
     }
 
     daemon.start = function() {
-        browser.storage.local.get(['server_url', 'dbname', 'user', 'password', 'uid', 'employee_id']).then(items => {
+        browser.storage.local.get(['server_url', 'dbname', 'user', 'password', 'uid', 'employee_id', 'interval']).then(items => {
             daemon.odoo = new Odoo({
                 "server_url": items.server_url,
                 "dbname": items.dbname,
@@ -59,7 +59,9 @@ function setStatus(status, worked_time = null) {
                 daemon.status = "undefined";
                 setStatus('undefined');
                 daemon.run();
-                daemon.intervalID = window.setInterval(daemon.run, 30000);
+                if (items.interval > 0) {
+                    daemon.intervalID = window.setInterval(daemon.run, items.interval * 1000);
+                }
             } else {
                 daemon.status = "not_configured";
                 setStatus('not_configured');
@@ -89,7 +91,7 @@ function setStatus(status, worked_time = null) {
                     console.log(error);
                 });
         } else if (status === 'connected') {
-            if (daemon.employee_id === undefined) {
+            if (!daemon.employee_id > 0 ) {
                 let domain = [
                     ['user_id', '=', daemon.uid]
                 ];
