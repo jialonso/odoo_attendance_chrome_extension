@@ -2,7 +2,7 @@
 <html style="padding: 10px;">
 
 <head>
-   <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <title>Options</title>
     <style>
         input[type=text],
@@ -13,10 +13,12 @@
             margin: 8px 0;
             box-sizing: border-box;
         }
+
         input[type=checkbox] {
-          padding: 12px 12px;
-          margin: 8px 0;
+            padding: 12px 12px;
+            margin: 8px 0;
         }
+
         button {
             border: none;
             color: white;
@@ -26,10 +28,12 @@
             display: inline-block;
             font-size: 14px;
         }
+
         #save {
-          background-color: #4CAF50;
-          float: right;
+            background-color: #4CAF50;
+            float: right;
         }
+
         #status {
             float: left;
             color: green;
@@ -38,12 +42,19 @@
 </head>
 
 <body>
-    Server: <input type="text" id="server_url" required pattern="https?://.+" placeholder="http://...:8069"><br/>
-    Database: <input type="text" id="dbname"  placeholder="yourcompanydb"><br/>
-    User: <input type="text" id="user" placeholder="user@yourcompany.com"><br/>
-    Password: <input type="password" id="password"><br/>
-    Update interval (seconds): <input type="number" id="interval" min="30" value="30"><br/>
-    <input type="checkbox" id="check_buttons"> Allow sign in/out<br>
+    Server:
+    <input type="text" id="server_url" placeholder="http://...:8069">
+    <br/> Database:
+    <input type="text" id="dbname" placeholder="yourcompanydb">
+    <br/> User:
+    <input type="text" id="user" placeholder="user@yourcompany.com">
+    <br/> Password:
+    <input type="password" id="password">
+    <br/> Update interval (seconds):
+    <input type="number" id="interval" min="30" value="30">
+    <br/>
+    <input type="checkbox" id="check_buttons"> Allow sign in/out
+    <br>
 
     <div id="status"></div>
     <button id="save">Guardar</button>

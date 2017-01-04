@@ -2,24 +2,21 @@ function get_status() {
   browser.runtime.sendMessage("getStatus").then(response => {
     // Set worked time text
     var worked_time_div = document.getElementById('worked_time');
-    if(response.status === 'sign_in' || response.status === 'sign_out') {
+    if (response.status === 'sign_in' || response.status === 'sign_out') {
       worked_time_div.innerHTML = response.worked_time;
-    }
-    else if(response.status === 'not_configured') {
+    } else if (response.status === 'not_configured') {
       worked_time_div.innerHTML = "Not configured";
-    }
-    else {
+    } else {
       worked_time_div.innerHTML = "Connecting";
     }
 
     // Display buttons
     browser.storage.local.get(['check_buttons']).then(items => {
       if (items.check_buttons) {
-        if(response.status === 'sign_in') {
+        if (response.status === 'sign_in') {
           var sign_out_btn = document.getElementById('sign_out_btn');
           sign_out_btn.style.display = 'inline';
-        }
-        else if(response.status === 'sign_out') {
+        } else if (response.status === 'sign_out') {
           var sign_in_btn = document.getElementById('sign_in_btn');
           sign_in_btn.style.display = 'inline';
         }
