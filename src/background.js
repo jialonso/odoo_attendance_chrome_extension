@@ -1,30 +1,25 @@
 function setStatus(status, worked_time = null) {
-    if (status == "sign_in") {
-        browser.browserAction.setBadgeText({
-            text: worked_time.slice(-4)
-        });
-        browser.browserAction.setBadgeBackgroundColor({
-            color: [0, 255, 0, 255]
-        });
-    } else if (status == "sign_out") {
-        browser.browserAction.setBadgeText({
-            text: worked_time.slice(-4)
-        });
-        browser.browserAction.setBadgeBackgroundColor({
-            color: [255, 0, 0, 255]
-        });
-    } else if (status == "undefined") {
-        browser.browserAction.setBadgeText({
-            text: "  "
-        });
-        browser.browserAction.setBadgeBackgroundColor({
-            color: [213, 219, 219, 255]
-        });
-    } else if (status == "not_configured") {
-        browser.browserAction.setBadgeText({
-            text: ""
-        });
+    var badgeText;
+    var badgeColor;
+    if (status === "sign_in" || status === 'sign_out') {
+        if (parseInt(worked_time.split(":")[0]) === 0) {
+            badgeText = worked_time.slice(-4);
+        }
+        else {
+            badgeText = worked_time.split(":")[0] + "h";
+        }
+        badgeColor = (status === "sign_in") ? "#00994C"  : "#FF0000";
+    } else if (status == "undefined" || status == "not_configured") {
+        badgeText = (status === "undefined") ? "  " : "";
+        badgeColor = "#D5DBDB";
     }
+
+    browser.browserAction.setBadgeText({
+        text: badgeText
+    });
+    browser.browserAction.setBadgeBackgroundColor({
+        color: badgeColor
+    });
 }
 
 (function start_daemon() {
@@ -95,7 +90,9 @@ function setStatus(status, worked_time = null) {
                 });
         } else if (status === 'connected') {
             if (daemon.employee_id === undefined) {
-                let domain = [['user_id', '=', daemon.uid]];
+                let domain = [
+                    ['user_id', '=', daemon.uid]
+                ];
                 daemon.odoo.search_read('hr.employee', domain, ['id'], 1).then((data) => {
                     var employee_id = data[0].id;
                     browser.storage.local.set({
@@ -105,11 +102,16 @@ function setStatus(status, worked_time = null) {
                     console.log(error);
                 });
             } else {
-                let domain = [['employee_id', '=', daemon.employee_id], ['name', '>', daemon.odoo.today()]];
+                let domain = [
+                    ['employee_id', '=', daemon.employee_id],
+                    ['name', '>', daemon.odoo.today()]
+                ];
                 daemon.odoo.search_read('hr.attendance', domain, ['action', 'name']).then((data) => {
-                    if(!data.length) {
-                      let domain = [['employee_id', '=', daemon.employee_id]];
-                      return daemon.odoo.search_read('hr.attendance', domain, ['action', 'name'], 1);
+                    if (!data.length) {
+                        let domain = [
+                            ['employee_id', '=', daemon.employee_id]
+                        ];
+                        return daemon.odoo.search_read('hr.attendance', domain, ['action', 'name'], 1);
                     }
                     return data;
                 }).then((data) => {
