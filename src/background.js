@@ -95,49 +95,36 @@ function setStatus(status, worked_time = null) {
                 });
         } else if (status === 'connected') {
             if (daemon.employee_id === undefined) {
-                daemon.odoo.search_read(
-                        model = 'hr.employee',
-                        domain = [
-                            [
-                                ['user_id', '=', daemon.uid]
-                            ]
-                        ],
-                        fields = ['id'],
-                        limit = 1
-                    ).then((data) => {
-                        var employee_id = data[0].id;
-                        browser.storage.local.set({
-                            employee_id: employee_id,
-                        });
-                    })
-                    .catch((error) => {
-                        console.log(error);
+                let domain = [['user_id', '=', daemon.uid]];
+                daemon.odoo.search_read('hr.employee', domain, ['id'], 1).then((data) => {
+                    var employee_id = data[0].id;
+                    browser.storage.local.set({
+                        employee_id: employee_id,
                     });
+                }).catch((error) => {
+                    console.log(error);
+                });
             } else {
-                daemon.odoo.search_read(
-                        model = 'hr.attendance',
-                        domain = [
-                            [
-                                ['employee_id', '=', daemon.employee_id],
-                                ['name', '>', daemon.odoo.today()]
-                            ]
-                        ],
-                        fields = ['action', 'name'],
-                        limit = 100
-                    ).then((data) => {
-                        var action;
-                        if (data.length > 0) {
-                            daemon.status = data[0]["action"];
-                            daemon.worked_time = daemon.get_worked_time(data);
-                        } else {
-                            daemon.status = 'sign_out';
-                            daemon.worked_time = "0:00";
-                        }
-                        setStatus(daemon.status, daemon.worked_time);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                let domain = [['employee_id', '=', daemon.employee_id], ['name', '>', daemon.odoo.today()]];
+                daemon.odoo.search_read('hr.attendance', domain, ['action', 'name']).then((data) => {
+                    if(!data.length) {
+                      let domain = [['employee_id', '=', daemon.employee_id]];
+                      return daemon.odoo.search_read('hr.attendance', domain, ['action', 'name'], 1);
+                    }
+                    return data;
+                }).then((data) => {
+                    var action;
+                    if (data.length) {
+                        daemon.status = data[0]["action"];
+                        daemon.worked_time = daemon.get_worked_time(data);
+                    } else {
+                        daemon.status = 'sign_out';
+                        daemon.worked_time = "0:00";
+                    }
+                    setStatus(daemon.status, daemon.worked_time);
+                }).catch((error) => {
+                    console.log(error);
+                });
             }
         }
     };

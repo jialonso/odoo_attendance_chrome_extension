@@ -65,7 +65,8 @@ Odoo.prototype.search_read = function(model, domain, fields = [], limit = 100) {
                 $.xmlrpc.force("string", this.password),
                 $.xmlrpc.force("string", model),
                 $.xmlrpc.force("string", "search_read"),
-                domain, {
+                [domain],
+                {
                     "fields": fields,
                     "limit": limit
                 }
