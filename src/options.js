@@ -1,3 +1,13 @@
+function translate() {
+  document.getElementById('MSG_server_url').innerHTML = browser.i18n.getMessage("server_url");
+  document.getElementById('MSG_database').innerHTML = browser.i18n.getMessage("database");
+  document.getElementById('MSG_user').innerHTML = browser.i18n.getMessage("user");
+  document.getElementById('MSG_password').innerHTML = browser.i18n.getMessage("password");
+  document.getElementById('MSG_update_interval').innerHTML = browser.i18n.getMessage("update_interval");
+  document.getElementById('MSG_allow_sign').innerHTML = browser.i18n.getMessage("allow_sign");
+  document.getElementById('save').innerHTML = browser.i18n.getMessage("save");
+}
+
 // Saves options to browser.storage.local.
 function save_options() {
   var server_url = document.getElementById('server_url').value;
@@ -18,7 +28,7 @@ function save_options() {
   }).then(() => {
     // Update status to let user know options were saved.
     var status = document.getElementById('status');
-    status.textContent = 'Opciones guardadas.';
+    status.textContent = browser.i18n.getMessage("options_saved");;
     setTimeout(function () {
       status.textContent = '';
     }, 750);
@@ -44,5 +54,7 @@ function restore_options() {
     document.getElementById('check_buttons').checked = items.check_buttons;
   });
 }
+
+document.addEventListener('DOMContentLoaded', translate);
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('save').addEventListener('click', save_options);

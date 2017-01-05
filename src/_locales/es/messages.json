@@ -1,0 +1,44 @@
+{
+  "appName": {
+    "message": "Asistencias Odoo"
+  },
+  "appDesc": {
+    "message": "Verifica tu último registro de asistencia y crea nuevos registros en Odoo 8 y 9" 
+  },
+  "server_url": {
+    "message": "URL del servidor"
+  },
+  "database": {
+    "message": "Base de datos"
+  },
+  "user": {
+    "message": "Usuario"
+  },
+  "password": {
+    "message": "Contraseña"
+  },
+  "update_interval": {
+    "message": "Intervalo de actualización (en segundos)"
+  },
+  "allow_sign": {
+    "message": "Permitir crear entradas/salidas"
+  },
+  "save": {
+    "message": "Guardar"
+  },
+  "options_saved": {
+    "message": "Opciones guardadas"
+  },
+  "sign_in": {
+    "message": "Entrada"
+  },
+  "sign_out": {
+    "message": "Salida"
+  },
+  "not_configured": {
+    "message": "No configurado"
+  },
+  "connecting": {
+    "message": "Conectando..."
+  }
+}

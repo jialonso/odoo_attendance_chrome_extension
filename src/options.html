@@ -42,22 +42,21 @@
 </head>
 
 <body>
-    Server:
+    <span id="MSG_server_url"></span>
     <input type="text" id="server_url" placeholder="http://...:8069">
-    <br/> Database:
+    <br/><span id="MSG_database"></span>
     <input type="text" id="dbname" placeholder="yourcompanydb">
-    <br/> User:
+    <br/><span id="MSG_user"></span>
     <input type="text" id="user" placeholder="user@yourcompany.com">
-    <br/> Password:
+    <br/><span id="MSG_password"></span>
     <input type="password" id="password">
-    <br/> Update interval (seconds):
+    <br/><span id="MSG_update_interval"></span>
     <input type="number" id="interval" min="30" value="30">
     <br/>
-    <input type="checkbox" id="check_buttons"> Allow sign in/out
-    <br>
-
+    <input type="checkbox" id="check_buttons"> <span id="MSG_allow_sign"></span>
+    <br/>
     <div id="status"></div>
-    <button id="save">Guardar</button>
+    <button id="save"></button>
     <script type="application/javascript" src="lib/browser-polyfill.js"></script>
     <script type="application/javascript" src="options.js"></script>
 </body>

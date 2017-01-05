@@ -1,3 +1,8 @@
+function translate() {
+  document.getElementById('sign_in_btn').innerHTML = browser.i18n.getMessage("sign_in");
+  document.getElementById('sign_out_btn').innerHTML = browser.i18n.getMessage("sign_out");
+}
+
 function get_status() {
   browser.runtime.sendMessage("getStatus").then(response => {
     // Set worked time text
@@ -5,9 +10,9 @@ function get_status() {
     if (response.status === 'sign_in' || response.status === 'sign_out') {
       worked_time_div.innerHTML = response.worked_time;
     } else if (response.status === 'not_configured') {
-      worked_time_div.innerHTML = "Not configured";
+      worked_time_div.innerHTML = browser.i18n.getMessage("not_configured");
     } else {
-      worked_time_div.innerHTML = "Connecting";
+      worked_time_div.innerHTML = browser.i18n.getMessage("connecting");
     }
 
     // Display buttons
@@ -35,6 +40,7 @@ function sign_out() {
   browser.runtime.sendMessage("sign_out");
 }
 
+document.addEventListener('DOMContentLoaded', translate);
 document.addEventListener('DOMContentLoaded', get_status);
 document.getElementById('sign_in_btn').addEventListener('click', sign_in);
 document.getElementById('sign_out_btn').addEventListener('click', sign_out);

@@ -1,0 +1,44 @@
+{
+  "appName": {
+    "message": "Odoo attendance"
+  },
+  "appDesc": {
+    "message": "Check attendance status and create attendance records in Odoo 8 and 9"
+  },
+  "server_url": {
+    "message": "Server URL"
+  },
+  "database": {
+    "message": "Database"
+  },
+  "user": {
+    "message": "User"
+  },
+  "password": {
+    "message": "Password"
+  },
+  "update_interval": {
+    "message": "Update interval (in seconds)"
+  },
+  "allow_sign": {
+    "message": "Allow sign in/out"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "options_saved": {
+    "message": "Options saved"
+  },
+  "sign_in": {
+    "message": "Sign in"
+  },
+  "sign_out": {
+    "message": "Sign out"
+  },
+  "not_configured": {
+    "message": "Not configured"
+  },
+  "connecting": {
+    "message": "Connecting..."
+  }
+}
