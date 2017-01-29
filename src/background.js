@@ -54,6 +54,8 @@ function setStatus(status, worked_time = null) {
       daemon.uid = items.uid;
       daemon.employee_id = items.employee_id;
       daemon.worked_time = "";
+      daemon.reasons_in = null;
+      daemon.reasons_out = null;
       if (daemon.odoo.status() === 'configured' || daemon.odoo.status() === 'connected') {
         daemon.status = "undefined";
         setStatus('undefined');
@@ -128,6 +130,12 @@ function setStatus(status, worked_time = null) {
         }).catch(error => {
           console.log(error);
         });
+        if(daemon.reasons_in === null) {
+          daemon.odoo.search_read('hr.action.reason', [], ['id', 'name', 'action_type']).then(data => {
+            daemon.reasons_in = data.filter(reason => reason.action_type === 'sign_in');
+            daemon.reasons_out = data.filter(reason => reason.action_type === 'sign_out');
+          });
+        }
       }
     }
   };
@@ -138,19 +146,21 @@ function setStatus(status, worked_time = null) {
   });
 
   browser.runtime.onMessage.addListener(msg => {
-    if (msg === "getStatus") {
+    if (msg.action === "getStatus") {
       return new Promise((resolve, reject) => {
         resolve({
           'status': daemon.status,
-          'worked_time': daemon.worked_time
+          'worked_time': daemon.worked_time,
+          'reasons': daemon.status === 'sign_in' ? daemon.reasons_out : daemon.reasons_in
         });
       });
-    } else if (msg === "sign_in" || msg === "sign_out") {
+    } else if (msg.action === "sign_in" || msg.action === "sign_out") {
       daemon.odoo.create(
         model = 'hr.attendance',
         data = [{
           'employee_id': daemon.employee_id,
-          'action': msg
+          'action': msg.action,
+          'action_desc': !isNaN(msg.reason) && parseInt(msg.reason) || null
         }]
       ).then(response => {
         daemon.restart();

@@ -24,6 +24,17 @@
             text-align: center;
         }
 
+        #buttons_container {
+            display: none;
+        }
+
+        #reasons_select {
+            padding: 4px 8px;
+            display: none;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
         #sign_in_btn {
             background-color: #4CAF50;
             display: none;
@@ -39,8 +50,12 @@
 <body>
     <div id="popup_container">
         <h1 id="worked_time"></h1>
-        <button id="sign_in_btn"></button>
-        <button id="sign_out_btn"></button>
+        <div id="buttons_container">
+            <hr>
+            <select id="reasons_select"></select>
+            <button id="sign_in_btn"></button>
+            <button id="sign_out_btn"></button>
+        </div>
     </div>
     <script type="application/javascript" src="lib/browser-polyfill.js"></script>
     <script type="application/javascript" src="popup.js"></script>
