@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html style="min-width: 100px">
+<html style="min-width: 160px">
 
 <head>
     <meta charset="UTF-8">
     <title>Worked time</title>
     <style>
         body {
-            min-width: 100px;
+            min-width: 160px;
         }
 
         button {
@@ -22,6 +22,20 @@
 
         #popup_container {
             text-align: center;
+        }
+
+        #title_container {
+            display: inline-block;
+        }
+
+        #img_container {
+            float: left;
+            padding-right: 10px;
+        }
+
+        #wt_container {
+            float: right;
+            padding-left: 10px;
         }
 
         #buttons_container {
@@ -49,7 +63,14 @@
 
 <body>
     <div id="popup_container">
-        <h1 id="worked_time"></h1>
+        <div id="title_container">
+            <div id="img_container">
+              <img src="logo48.png">
+            </div>
+            <div id="wt_container">
+              <h1 id="worked_time"></h1>
+            </div>
+        </div>
         <div id="buttons_container">
             <hr>
             <select id="reasons_select"></select>
