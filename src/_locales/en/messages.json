@@ -3,7 +3,7 @@
     "message": "Odoo attendance"
   },
   "appDesc": {
-    "message": "Check attendance status and create attendance records in Odoo 8 and 9"
+    "message": "Check attendance status and create attendance records in Odoo 10+"
   },
   "server_url": {
     "message": "Server URL"
@@ -28,12 +28,6 @@
   },
   "options_saved": {
     "message": "Options saved"
-  },
-  "sign_in": {
-    "message": "Sign in"
-  },
-  "sign_out": {
-    "message": "Sign out"
   },
   "not_configured": {
     "message": "Not configured"

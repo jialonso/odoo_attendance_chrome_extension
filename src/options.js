@@ -4,7 +4,6 @@ function translate() {
   document.getElementById('MSG_user').innerHTML = browser.i18n.getMessage("user");
   document.getElementById('MSG_password').innerHTML = browser.i18n.getMessage("password");
   document.getElementById('MSG_update_interval').innerHTML = browser.i18n.getMessage("update_interval");
-  document.getElementById('MSG_allow_sign').innerHTML = browser.i18n.getMessage("allow_sign");
   document.getElementById('save').innerHTML = browser.i18n.getMessage("save");
 }
 
@@ -15,27 +14,25 @@ function save_options() {
   var user = document.getElementById('user').value;
   var password = document.getElementById('password').value;
   var interval = parseInt(document.getElementById('interval').value);
-  var check_buttons = document.getElementById('check_buttons').checked;
   browser.storage.local.set({
     server_url: server_url,
     dbname: dbname,
     user: user,
     password: password,
     interval: interval,
-    check_buttons: check_buttons,
     uid: 0,
     employee_id: 0
-  }).then(() => {
+  }).then(function () {
     // Update status to let user know options were saved.
     var status = document.getElementById('status');
-    status.textContent = browser.i18n.getMessage("options_saved");;
+    status.textContent = browser.i18n.getMessage("options_saved");
     setTimeout(function () {
       status.textContent = '';
     }, 750);
   });
 }
 
-// Restores select box and checkbox state using the preferences
+// Restores select box state using the preferences
 // stored in browser.storage.local.
 function restore_options() {
   browser.storage.local.get({
@@ -43,15 +40,13 @@ function restore_options() {
     dbname: '',
     user: '',
     password: '',
-    interval: 30,
-    check_buttons: true
-  }).then(items => {
+    interval: 30
+  }).then(function (items) {
     document.getElementById('server_url').value = items.server_url;
     document.getElementById('dbname').value = items.dbname;
     document.getElementById('user').value = items.user;
     document.getElementById('password').value = items.password;
     document.getElementById('interval').value = items.interval;
-    document.getElementById('check_buttons').checked = items.check_buttons;
   });
 }
 

@@ -10,15 +10,15 @@ var Odoo = function (config) {
 
 Odoo.prototype.connect = function () {
   odoo = this;
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     $.xmlrpc({
-      url: this.server_url + "/xmlrpc/common",
+      url: odoo.server_url + "/xmlrpc/common",
       methodName: "login",
       dataType: "jsonrpc",
       params: [
-        $.xmlrpc.force("string", this.dbname),
-        $.xmlrpc.force("string", this.user),
-        $.xmlrpc.force("string", this.password)
+        $.xmlrpc.force("string", odoo.dbname),
+        $.xmlrpc.force("string", odoo.user),
+        $.xmlrpc.force("string", odoo.password)
       ],
       success: function (response, status, jqXHR) {
         odoo.uid = jqXHR.responseJSON[0];
@@ -52,15 +52,16 @@ Odoo.prototype.status = function () {
 };
 
 Odoo.prototype.search_read = function (model, domain, fields = [], limit = 100) {
-  return new Promise((resolve, reject) => {
+  odoo = this;
+  return new Promise(function (resolve, reject) {
     $.xmlrpc({
-      url: this.server_url + "/xmlrpc/object",
+      url: odoo.server_url + "/xmlrpc/object",
       methodName: "execute_kw",
       dataType: "jsonrpc",
       params: [
-        $.xmlrpc.force("string", this.dbname),
-        $.xmlrpc.force("int", this.uid),
-        $.xmlrpc.force("string", this.password),
+        $.xmlrpc.force("string", odoo.dbname),
+        $.xmlrpc.force("int", odoo.uid),
+        $.xmlrpc.force("string", odoo.password),
         $.xmlrpc.force("string", model),
         $.xmlrpc.force("string", "search_read"), [domain], {
           "fields": fields,
@@ -79,15 +80,16 @@ Odoo.prototype.search_read = function (model, domain, fields = [], limit = 100) 
 };
 
 Odoo.prototype.create = function (model, data) {
-  return new Promise((resolve, reject) => {
+  odoo = this;
+  return new Promise(function (resolve, reject) {
     $.xmlrpc({
-      url: this.server_url + "/xmlrpc/object",
+      url: odoo.server_url + "/xmlrpc/object",
       methodName: "execute_kw",
       dataType: "jsonrpc",
       params: [
-        $.xmlrpc.force("string", this.dbname),
-        $.xmlrpc.force("int", this.uid),
-        $.xmlrpc.force("string", this.password),
+        $.xmlrpc.force("string", odoo.dbname),
+        $.xmlrpc.force("int", odoo.uid),
+        $.xmlrpc.force("string", odoo.password),
         $.xmlrpc.force("string", model),
         $.xmlrpc.force("string", "create"),
         data
