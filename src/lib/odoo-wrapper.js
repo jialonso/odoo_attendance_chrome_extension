@@ -6,11 +6,13 @@ var Odoo = function (config) {
   this.user = config.user;
   this.uid = config.uid;
   this.password = config.password;
+  this.version = config.version;
 };
 
 Odoo.prototype.connect = function () {
   odoo = this;
-  return new Promise(function (resolve, reject) {
+
+  var uid$ = new Promise(function (resolve, reject) {
     $.xmlrpc({
       url: odoo.server_url + "/xmlrpc/common",
       methodName: "login",
@@ -29,6 +31,24 @@ Odoo.prototype.connect = function () {
       }
     });
   });
+
+  var version$ = new Promise(function (resolve, reject) {
+    $.xmlrpc({
+      url: odoo.server_url + "/xmlrpc/common",
+      methodName: "version",
+      dataType: "jsonrpc",
+      params: [],
+      success: function (response, status, jqXHR) {
+        odoo.version = jqXHR.responseJSON[0].server_version_info[0];
+        resolve(odoo.version);
+      },
+      error: function (jqXHR, status, error) {
+        reject(error);
+      }
+    });
+  });
+
+  return Promise.all([uid$, version$]);
 };
 
 Odoo.prototype.status = function () {
@@ -44,7 +64,7 @@ Odoo.prototype.status = function () {
   if (typeof this.password !== 'string' || this.password.length === 0) {
     return 'not_configured';
   }
-  if (typeof this.uid === 'number' && this.uid > 0) {
+  if (typeof this.uid === 'number' && this.uid > 0 && typeof this.version === 'number') {
     return 'connected';
   } else {
     return 'configured';

@@ -3,7 +3,7 @@
     "message": "Odoo attendance"
   },
   "appDesc": {
-    "message": "Check attendance status and create attendance records in Odoo 10+"
+    "message": "Check attendance status in Odoo 8+"
   },
   "server_url": {
     "message": "Server URL"

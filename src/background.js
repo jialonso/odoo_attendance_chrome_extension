@@ -39,8 +39,26 @@ function setStatus(status, worked_time) {
     return dt_str;
   };
 
+  daemon.get_worked_time_v8 = function (records) {
+    records = records.reverse();
+    records.push({
+      action: "sign_out",
+      name: daemon.odoo.now()
+    });
+    var total = 0;
+    for (var i = 1; i < records.length; i++) {
+      if (records[i]['action'] === "sign_out" && records[i - 1]['action'] === "sign_in") {
+        var current = new Date(records[i]['name']) - new Date(records[i - 1]['name']);
+        total += Math.max(0, current); // Avoid problems with non-sincronized clocks
+      }
+    }
+    var dt = new Date(total);
+    var dt_str = ("0" + dt.getUTCHours()).slice(-2) + ":" + ("0" + dt.getUTCMinutes()).slice(-2);
+    return dt_str;
+  };
+
   daemon.start = function() {
-    const variables = ['server_url', 'dbname', 'user', 'password', 'uid', 'employee_id', 'interval'];
+    const variables = ['server_url', 'dbname', 'user', 'password', 'uid', 'employee_id', 'interval', 'version'];
     browser.storage.local.get(variables)
       .then(function(items) {
         daemon.odoo = new Odoo({
@@ -48,13 +66,13 @@ function setStatus(status, worked_time) {
           dbname: items.dbname,
           user: items.user,
           password: items.password,
-          uid: items.uid
+          uid: items.uid,
+          version: items.version
         });
         daemon.uid = items.uid;
         daemon.employee_id = items.employee_id;
+        daemon.version = items.version;
         daemon.worked_time = '';
-        daemon.reasons_in = null;
-        daemon.reasons_out = null;
         if (daemon.odoo.status() === 'configured' || daemon.odoo.status() === 'connected') {
           daemon.status = 'undefined';
           setStatus('undefined', null);
@@ -82,8 +100,8 @@ function setStatus(status, worked_time) {
     // step: 0 -> set uid | 1 -> set employee_id | 2 -> check attendance
     if (status === 'configured') {
       daemon.odoo.connect()
-        .then(function(uid) {
-          browser.storage.local.set({uid: uid});
+        .then(function(data) {
+          browser.storage.local.set({uid: data[0], version: data[1]});
         })
         .catch(function(error) {
           console.log(error);
@@ -101,7 +119,7 @@ function setStatus(status, worked_time) {
           .catch(function(error) {
             console.log(error);
           });
-      } else {
+      } else if (daemon.version >= 10) {
         const domain = [
           ['employee_id', '=', daemon.employee_id],
           '|',
@@ -121,6 +139,33 @@ function setStatus(status, worked_time) {
             setStatus(daemon.status, daemon.worked_time);
           })
           .catch(function(error) {
+            console.log(error);
+          });
+      } else { // Odoo v8 and v9
+        const domain = [
+          ['employee_id', '=', daemon.employee_id],
+          ['name', '>', daemon.odoo.today()]
+        ];
+        daemon.odoo.search_read('hr.attendance', domain, ['action', 'name'])
+          .then(function(data) {
+            if (!data.length) {
+              const domain = [
+                ['employee_id', '=', daemon.employee_id]
+              ];
+              return daemon.odoo.search_read('hr.attendance', domain, ['action', 'name'], 1);
+            }
+            return data;
+          }).then(function(data) {
+            var action;
+            if (data.length) {
+              daemon.status = data[0]["action"];
+              daemon.worked_time = daemon.get_worked_time_v8(data);
+            } else {
+              daemon.status = 'sign_out';
+              daemon.worked_time = "0:00";
+            }
+            setStatus(daemon.status, daemon.worked_time);
+          }).catch(function(error) {
             console.log(error);
           });
       }

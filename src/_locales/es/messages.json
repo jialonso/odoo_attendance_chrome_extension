@@ -3,7 +3,7 @@
     "message": "Asistencias Odoo"
   },
   "appDesc": {
-    "message": "Verifica tu último registro de asistencia y crea nuevos registros en Odoo 10+" 
+    "message": "Verifica tus registros de asistencia en Odoo 8+"
   },
   "server_url": {
     "message": "URL del servidor"
